@@ -1,0 +1,66 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+<style>
+.button {
+  padding: 5px 10px;
+  font-size: 10px;
+  text-align: center;
+  cursor: pointer;
+  outline: none;
+  color: #fff;
+  background-color: #4CAF50;
+  border: none;
+  border-radius: 5px;
+}
+
+.button:hover {background-color: #3e8e41}
+
+.button:active {
+  background-color: #3e8e41;
+  transform: translateY(2px);
+}
+</style>
+<script src='controller.js'></script>
+</head>
+<body>
+
+<h1>MEMO</h1>
+
+<input type='text' id='memo'>
+
+<button class="button" id='add'>ADD</button>
+<button class="button" id='removeall'>REMOVE ALL</button>
+
+<div id='memo_list'>
+	<li>todo list</li>
+</div>
+
+<script>
+
+	var broker = new EventBroker();
+
+	var memo = document.getElementById("memo");
+	var add = document.getElementById("add");
+	var memo_list = document.getElementById("memo_list");
+
+	add.addEventListener("click", function(event)
+	{
+		console.log("click..." + memo.value);
+		broker.publish("refresh", memo.value);
+	},false);	
+
+	broker.subscribe(memo_list, "refresh", function(event)
+	{
+		console.log("memo_list...refresh..." + event.detail);
+
+		if(event.detail.length !== 0)
+		{
+			memo_list.innerHTML += "<li>"+event.detail+"</li>";
+		}
+	});
+
+</script>
+
+</body>
+</html>
